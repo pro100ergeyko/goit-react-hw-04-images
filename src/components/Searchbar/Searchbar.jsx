@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   Header,
   SearchForm,
@@ -9,43 +9,38 @@ import { BsSearch } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { optionsForNotify } from 'components/Helpers/OptionsForNotify';
 
-export class Searchbar extends Component {
-  state = {
-    value: '',
+export const Searchbar = props => {
+  const [value, setValue] = useState('');
+
+  const handleChange = evt => {
+    const { value } = evt.currentTarget;
+    setValue(value.toLowerCase());
   };
 
-  handleChange = ({ target: { value } }) => {
-    this.setState({ value: value.toLowerCase() });
-  };
-
-  handleSubmit = evt => {
+  const handleSubmit = evt => {
     evt.preventDefault();
-    if (this.state.value.trim() === '') {
+    if (value.trim() === '') {
       return toast.info('☝ Enter key words for search', optionsForNotify);
     }
-    this.props.onSubmit(this.state.value);
-    this.setState({ value: '' });
+    props.onSubmit(value);
+    setValue('');
   };
 
-  render() {
-    const { value } = this.state;
-
-    return (
-      <Header>
-        <SearchForm onSubmit={this.handleSubmit}>
-          <SearchFormBtn>
-            <BsSearch size="24" />
-          </SearchFormBtn>
-          <SearchFormInput
-            type="text"
-            autocomplete="off"
-            autoFocus
-            placeholder="Enter key words for search"
-            value={value}
-            onChange={this.handleChange}
-          />
-        </SearchForm>
-      </Header>
-    );
-  }
-}
+  return (
+    <Header>
+      <SearchForm onSubmit={handleSubmit}>
+        <SearchFormBtn>
+          <BsSearch size="24" />
+        </SearchFormBtn>
+        <SearchFormInput
+          type="text"
+          autocomplete="off"
+          autoFocus
+          placeholder="Enter key words for search"
+          value={value}
+          onChange={handleChange}
+        />
+      </SearchForm>
+    </Header>
+  );
+};
